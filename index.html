@@ -125,7 +125,7 @@
     </section>
   </main>
 
-  <!-- КРУГЛОЕ модальное фото при наведении -->
+  <!-- КРУГЛОЕ модальное фото -->
   <div class="photo-modal" id="photoModal">
     <div class="photo-modal-backdrop"></div>
     <div class="photo-modal-content">
@@ -140,23 +140,45 @@
     if (photo && modal) {
       const modalContent = modal.querySelector('.photo-modal-content');
 
-      // открыть модалку при наведении на аватар
-      photo.addEventListener('mouseenter', () => {
+      const openModal = () => {
         modal.classList.add('open');
-      });
+      };
 
-      // если ушли с аватара мимо модалки — закрыть
+      const closeModal = () => {
+        modal.classList.remove('open');
+      };
+
+      // ПК: открыть по наведению
+      photo.addEventListener('mouseenter', openModal);
+
+      // ПК: закрыть, если ушли с аватара мимо модалки
       photo.addEventListener('mouseleave', (e) => {
         if (!modal.contains(e.relatedTarget)) {
-          modal.classList.remove('open');
+          closeModal();
         }
       });
 
-      // если курсор ушёл из большого круга — закрыть
+      // Мобильный и ПК: открыть по клику/тапу
+      photo.addEventListener('click', openModal);
+
+      // Мобильный и ПК: закрыть по клику по модалке (фон или фото)
+      modal.addEventListener('click', () => {
+        closeModal();
+      });
+
+      // ПК: закрыть, когда мышь ушла из большого круга
       modalContent.addEventListener('mouseleave', () => {
-        modal.classList.remove('open');
+        closeModal();
       });
     }
+
+    // Всегда открываться с начала страницы, без восстановления скролла
+    window.addEventListener('load', () => {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+    });
   </script>
 </body>
 </html>
