@@ -137,6 +137,10 @@
     const photo = document.getElementById('profilePhoto');
     const modal = document.getElementById('photoModal');
 
+    function isTouchDevice() {
+      return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
     if (photo && modal) {
       const modalContent = modal.querySelector('.photo-modal-content');
 
@@ -148,27 +152,43 @@
         modal.classList.remove('open');
       };
 
-      // ПК: открыть по наведению
-      photo.addEventListener('mouseenter', openModal);
-
-      // ПК: закрыть, если ушли с аватара мимо модалки
-      photo.addEventListener('mouseleave', (e) => {
-        if (!modal.contains(e.relatedTarget)) {
+      // Десктоп: hover + click
+      if (!isTouchDevice()) {
+        photo.addEventListener('mouseenter', openModal);
+        photo.addEventListener('mouseleave', (e) => {
+          if (!modal.contains(e.relatedTarget)) {
+            closeModal();
+          }
+        });
+        photo.addEventListener('click', openModal);
+        modalContent.addEventListener('mouseleave', () => {
           closeModal();
+        });
+      }
+
+      // Мобильные: только tap (touch/click)
+      photo.addEventListener('click', (e) => {
+        if (isTouchDevice()) {
+          e.preventDefault();
+          openModal();
+        }
+      });
+      photo.addEventListener('touchstart', (e) => {
+        if (isTouchDevice()) {
+          e.preventDefault();
+          openModal();
         }
       });
 
-      // Мобильный и ПК: открыть по клику/тапу
-      photo.addEventListener('click', openModal);
-
-      // Мобильный и ПК: закрыть по клику по модалке (фон или фото)
+      // Закрытие модалки по нажатию в любую область модалки (фон или фото)
       modal.addEventListener('click', () => {
         closeModal();
       });
-
-      // ПК: закрыть, когда мышь ушла из большого круга
-      modalContent.addEventListener('mouseleave', () => {
-        closeModal();
+      modal.addEventListener('touchstart', (e) => {
+        if (isTouchDevice()) {
+          e.preventDefault();
+          closeModal();
+        }
       });
     }
 

@@ -108,7 +108,7 @@ body {
   width: 120%;
   height: 120%;
   object-fit: cover;
-  object-position: 50% 35%; /* лицо ближе к центру */
+  object-position: 50% 35%;
   transform: translate(-10%, -10%);
 }
 
