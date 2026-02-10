@@ -437,3 +437,10 @@ html, body {
     width: 6px;
   }
 }
+
+/* Коррекция для мобильных устройств — предотвращение обрезания нижней части контента */
+@media (max-width: 640px) {
+  .snap-section {
+    min-height: calc(100vh - var(--nav-height) - var(--footer-height));
+  }
+}
