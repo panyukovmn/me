@@ -5,6 +5,8 @@
   --text-main: #e5e7eb;
   --text-muted: #9ca3af;
   --border-glass: rgba(55, 65, 81, 0.9);
+  --nav-height: 60px;
+  --footer-height: 50px;
 }
 
 /* Сброс */
@@ -14,29 +16,31 @@
   padding: 0;
 }
 
-/* Базовые стили */
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+/* Отключаем скролл на всём документе */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg-gradient);
   color: var(--text-main);
-  min-height: 100vh;
 }
 
-/* Верхнее меню */
+/* Верхнее меню — фиксировано */
 .top-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10;
+  z-index: 1000;
+  height: var(--nav-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 7vw;
+  padding: 0 7vw;
   background: rgba(3, 7, 18, 0.96);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+  pointer-events: auto;
 }
 
 .logo {
@@ -56,21 +60,54 @@ body {
   color: var(--accent);
 }
 
-/* Контейнер с прокруткой экранов */
+/* ЕДИНСТВЕННЫЙ скролл — внутри этого контейнера */
 .snap-container {
-  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
+  z-index: 1;
+  padding-top: var(--nav-height);
+  padding-bottom: var(--footer-height);
+  box-sizing: border-box;
+  background: transparent;
+
+  /* Красивый скроллбар */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
 }
 
+/* Стиль полосы прокрутки (только для WebKit: Chrome, Edge, Safari) */
+.snap-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.snap-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.snap-container::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 4px;
+}
+
+.snap-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.6);
+}
+
+/* Секции — теперь с отступом от верха при скролле */
 .snap-section {
   scroll-snap-align: start;
   min-height: 100vh;
-  padding: 96px 7vw 48px;
+  padding: 0 7vw;
   display: flex;
   align-items: center;
   justify-content: center;
+  scroll-margin-top: var(--nav-height); /* Чтобы не закрывалось меню */
 }
 
 /* Стеклянные карточки */
@@ -91,7 +128,7 @@ body {
   text-align: center;
 }
 
-/* Маленький круглый аватар (крупный кроп лица) */
+/* Аватар */
 .profile-photo {
   width: 170px;
   height: 170px;
@@ -134,7 +171,7 @@ body {
   font-size: 15px;
 }
 
-/* Счётчики */
+/* Статистика */
 .stats {
   display: flex;
   flex-wrap: wrap;
@@ -206,7 +243,7 @@ body {
   color: var(--accent);
 }
 
-/* Общие блоки */
+/* Основные блоки */
 .section-inner h2 {
   font-size: 22px;
   margin-bottom: 12px;
@@ -289,7 +326,7 @@ body {
   color: var(--accent);
 }
 
-/* КРУГЛОЕ модальное фото */
+/* Модальное фото */
 .photo-modal {
   position: fixed;
   inset: 0;
@@ -303,8 +340,8 @@ body {
 }
 
 .photo-modal.open {
-  opacity: 1;
   pointer-events: auto;
+  opacity: 1;
 }
 
 .photo-modal-backdrop {
@@ -329,10 +366,31 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 45%; /* немного ниже — больше плеч и фона */
+  object-position: 50% 45%;
 }
 
-/* Адаптивность */
+/* Футер — фиксирован внизу */
+.site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  height: var(--footer-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7vw;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: 0.8;
+  background: rgba(3, 7, 18, 0.96);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(15, 23, 42, 0.9);
+}
+
+/* Адаптив */
 @media (max-width: 900px) {
   .glass-card {
     padding: 24px 18px;
@@ -346,6 +404,7 @@ body {
 @media (max-width: 640px) {
   .top-nav {
     padding-inline: 16px;
+    height: 56px;
   }
 
   .top-nav nav a {
@@ -354,7 +413,7 @@ body {
   }
 
   .snap-section {
-    padding-inline: 16px;
+    padding: 0 16px;
   }
 
   .profile-photo {
@@ -365,5 +424,16 @@ body {
   .photo-modal-content {
     width: min(70vw, 360px);
     height: min(70vw, 360px);
+  }
+
+  .site-footer {
+    padding: 0 16px;
+    font-size: 11px;
+    height: 46px;
+  }
+
+  /* Адаптация скролла на мобильных */
+  .snap-container::-webkit-scrollbar {
+    width: 6px;
   }
 }
