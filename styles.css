@@ -442,5 +442,6 @@ html, body {
 @media (max-width: 640px) {
   .snap-section {
     min-height: calc(100vh - var(--nav-height) - var(--footer-height));
+    padding-bottom: 20px; /* Добавлен отступ снизу для прокрутки */
   }
 }
