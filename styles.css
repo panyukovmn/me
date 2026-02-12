@@ -442,6 +442,18 @@ html, body {
 @media (max-width: 640px) {
   .snap-section {
     min-height: calc(100vh - var(--nav-height) - var(--footer-height));
-    padding-bottom: 20px; /* Добавлен отступ снизу для прокрутки */
+    padding-bottom: 40px; /* Увеличенный отступ снизу для лучшей прокрутки */
+    overflow-y: auto; /* Явное разрешение скролла */
+  }
+  
+  /* Дополнительно — прижимаем футер, чтобы не мешать */
+  .site-footer {
+    position: relative;
+    z-index: 900;
+  }
+  
+  /* Убедимся, что контейнер прокрутки позволяет докрутить до конца */
+  .snap-container {
+    padding-bottom: calc(var(--footer-height) + 40px);
   }
 }
