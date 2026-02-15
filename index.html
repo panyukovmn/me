@@ -194,13 +194,32 @@
       });
     }
 
-    // Всегда открываться с начала страницы, без восстановления скролла
+    // Принудительная прокрутка в начало при загрузке и каждом обновлении
+    function resetScroll() {
+      window.scrollTo(0, 0);
+      const container = document.querySelector('.snap-container');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    }
+
+    // Сброс при полной загрузке страницы
     window.addEventListener('load', () => {
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
-      window.scrollTo(0, 0);
+      setTimeout(resetScroll, 100);
     });
+
+    // Сброс при показе страницы (после возврата из другой вкладки или при обновлении)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        setTimeout(resetScroll, 100);
+      }
+    });
+
+    // Сброс при online событии (восстановление соединения)
+    window.addEventListener('online', resetScroll);
   </script>
 </body>
 </html>
